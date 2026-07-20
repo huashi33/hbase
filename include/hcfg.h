@@ -3,38 +3,29 @@
 #include "hdef.h"
 
 
-
-
 #define HCFG_TYPE_CONF  0
 #define HCFG_TYPE_INI   1
+#define HCFG_TYPE_END   2
+
+
 typedef struct hcfg_{
   uint8_t   cfg_type;
   uint32_t  size;
-  void*     data;
+  void*     handle;
 }hcfg_t;
+
+
+
 int hcfg_init(hcfg_t* c,const char *filename,uint8_t cfg_type);
 int hcfg_deinit(hcfg_t* c);
-int hcfg_getstr(hcfg_t* c,const char* key);
-int hcfg_getint(hcfg_t* c,const char* key);
-int hcfg_getdouble(hcfg_t* c,const char* key);
+int hcfg_str(hcfg_t* c,const char* key,char *val,size_t val_size);
+// int hcfg_int(hcfg_t* c,const char* key,int *val);
+// int hcfg_int64(hcfg_t* c,const char* key,int64_t *val);
+// int hcfg_double(hcfg_t* c,const char* key,double *val);
 
 
 
-// htime 
-typedef struct htime_{
-  uint16_t  year;
-  uint8_t   mon;
-  uint8_t   day;
-  uint8_t   hour;
-  uint8_t   min;
-  uint8_t   sec;
-  uint16_t  millsec;
-}htime_t;
 
-// ms since 1970
-int htime_utc(uint64_t *t);
-int htime_utc2htime(const uint64_t t,htime_t* ht);
-int htime_htime2utc(uint64_t *t,const htime_t* ht);
 
 
 #endif
