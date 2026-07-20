@@ -12,7 +12,7 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 file(GLOB HBASE_SRCS "src/*.c")
 add_library(hbase SHARED ${HBASE_SRCS})
-target_link_libraries(hbase PUBLIC zlog)
+target_link_libraries(hbase zlog iniparser)
 
 # install
 # file(GLOB HBASE_INCS "*.h")

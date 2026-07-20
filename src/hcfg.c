@@ -1,7 +1,5 @@
 #include "hcfg.h"
-
 #include <string.h>
-
 #include "iniparser.h"
 
 int hcfg_init(hcfg_t* c, const char* filename, uint8_t cfg_type) {
