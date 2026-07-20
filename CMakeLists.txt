@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(hbase C)
 
 
-set(CMAKE_INSTALL_PREFIX "/home/huashi/code/app")
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_INSTALL_PREFIX "/home/huashi/code/")
+set(CMAKE_BUILD_TYPE Debug)
 
 
 
