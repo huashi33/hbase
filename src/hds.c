@@ -10,7 +10,6 @@
 
 int hbuf_init(hbuf_t* b, size_t s) {
   HBASE_RET_WHEN(!b, HBASE_RET(HBASE_RET_BUF_BASE, HBASE_RET_PARAM(0)));
-  HBASE_RET_WHEN(!s, HBASE_RET(HBASE_RET_BUF_BASE, HBASE_RET_PARAM(1)));
   HBASE_RET_WHEN(HBUF_DATA_SIZE_MAX < s,
                  HBASE_RET(HBASE_RET_BUF_BASE, HBASE_RET_PARAM(2)));
 
@@ -55,6 +54,7 @@ int hbuf_push(hbuf_t* b, const void* d, size_t dsize) {
   r = hbuf_realloc(b, b->len + dsize);
   HBASE_RET_WHEN(r, r);
   memcpy(b->data + b->len, d, dsize);
+  b->len += dsize;
   return HBASE_RET_OK;
 }
 int hbuf_print(hbuf_t* b, size_t ofs, size_t size) {

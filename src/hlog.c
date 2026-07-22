@@ -18,7 +18,8 @@ int hlog_init(const char *appname,const char* cfgfilename) {
 int hlog_deinit(const char *appname) { 
 
   dzlog_info("deinit %s", appname);
-  zlog_fini();
+  // the lib will register atexit and call zlog_fini
+  // zlog_fini();
   return HBASE_RET_OK;
 }
 
