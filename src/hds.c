@@ -1,3 +1,5 @@
+
+
 #include "hds.h"
 
 #include <stdio.h>
@@ -6,7 +8,7 @@
 
 // BUF
 #define HBUF_DATA_SIZE_MAX 1024 * 1024 * 1024  // 1 GB
-#define HBUF_DATA_SIZE_MIN 512                 // 512 byte
+#define HBUF_DATA_SIZE_MIN 32                 // 32 byte
 
 int hbuf_init(hbuf_t* b, size_t s) {
   HBASE_RET_WHEN(!b, HBASE_RET(HBASE_RET_BUF_BASE, HBASE_RET_PARAM(0)));
@@ -57,6 +59,13 @@ int hbuf_push(hbuf_t* b, const void* d, size_t dsize) {
   b->len += dsize;
   return HBASE_RET_OK;
 }
+
+int hbuf_clear(hbuf_t *b){
+  HBASE_RET_WHEN(!b, HBASE_RET(HBASE_RET_BUF_BASE, HBASE_RET_PARAM(0)));
+  b->len = 0;
+  return HBASE_RET_OK;
+}
+
 int hbuf_print(hbuf_t* b, size_t ofs, size_t size) {
   for (uint64_t i = ofs; size--; i++) {
     printf("%02X\t", b->data[i]);
@@ -243,7 +252,64 @@ int hislist_foreach(hlist_t* l, hlist_foreach_t f) {
 
 
 
-int hhash_init(hhash_t*,size_t){return HBASE_RET_OK;}
-int hhash_deinit(hhash_t*){return HBASE_RET_OK;}
-int hhash_set(hhash_t *h,const char* key,hlistitem_t* target){return HBASE_RET_OK;}
-int hhash_get(hhash_t *h,const char* key,hlistitem_t* target){return HBASE_RET_OK;}
+// HASH
+// 基于 stb_ds.h 字符串哈希表（sh_new_strdup 模式）的封装实现。
+// handle 类型为 hhash_entry_t*（与 stb_ds 的 struct{char*key; T value;}* 兼容）。
+
+// int hhash_init(hhash_t *h) {
+//     HBASE_RET_WHEN(!h, HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_PARAM(0)));
+//     h->handle = NULL;
+//     /* sh_new_strdup：让 stb_ds 自动 strdup/free key，无需调用方管理 key 生命期 */
+//     sh_new_strdup(h->handle);
+//     return HBASE_RET_OK;
+// }
+
+// int hhash_deinit(hhash_t *h) {
+//     HBASE_RET_WHEN(!h, HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_PARAM(0)));
+//     shfree(h->handle);   /* 释放哈希表及所有 strdup 拷贝的 key，handle 置 NULL */
+//     h->handle = NULL;
+//     return HBASE_RET_OK;
+// }
+
+// int hhash_set(hhash_t *h, const char *key, void *val) {
+//     HBASE_RET_WHEN(!h,   HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_PARAM(0)));
+//     HBASE_RET_WHEN(!key, HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_PARAM(1)));
+//     /* stb_ds 宏要求 key 为 char*，强转掉 const（内部会 strdup，不会修改原字符串） */
+
+//     shput(h->handle, (char *)key, val);
+//     return HBASE_RET_OK;
+// }
+
+// void *hhash_get(hhash_t *h, const char *key) {
+//     if (!h || !key) return NULL;
+//     /* shgeti 返回 -1 表示不存在，避免与 value==NULL 混淆 */
+//     ptrdiff_t idx = shgeti(h->handle, (char *)key);
+//     if (idx < 0) return NULL;
+//     return h->handle[idx].value;
+// }
+
+// int hhash_del(hhash_t *h, const char *key) {
+//     HBASE_RET_WHEN(!h,   HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_PARAM(0)));
+//     HBASE_RET_WHEN(!key, HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_PARAM(1)));
+//     /* shdel 返回 1 表示删除成功，0 表示 key 不存在 */
+//     int found = shdel(h->handle, (char *)key);
+//     if (!found) return HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_NOTFOUND);
+//     return HBASE_RET_OK;
+// }
+
+// size_t hhash_len(hhash_t *h) {
+//     if (!h) return 0;
+//     return (size_t)shlen(h->handle);
+// }
+
+// void *hhash_geti(hhash_t *h, size_t index) {
+//     if (!h) return NULL;
+//     if ((ptrdiff_t)index >= shlen(h->handle)) return NULL;
+//     return h->handle[index].value;
+// }
+
+// const char *hhash_geti_key(hhash_t *h, size_t index) {
+//     if (!h) return NULL;
+//     if ((ptrdiff_t)index >= shlen(h->handle)) return NULL;
+//     return h->handle[index].key;
+// }
