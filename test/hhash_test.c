@@ -136,7 +136,7 @@ HHASH_DEFINE(char*, hdval_t)
 // #define STB_DS_IMPLEMENTATION
 static void hhash_test() {
   int r = 0;
-  hhash_hdval_t_t* hash_hdval = hhash_init_hdval_t();
+  hhash_hdval_t* hash_hdval = hhash_init_hdval_t();
   printf("[%08X]hhash_init_hdval_t:%p\n", r, hash_hdval);
 
   hdval_t v;
@@ -158,7 +158,7 @@ static void hhash_test() {
     printf("[%08X]hhash_get_hdval_t,type:%d\n", r, pv->type);
   }
 
-  r = hhash_free_hdval_t(hash_hdval);
+  r = hhash_deinit_hdval_t(hash_hdval);
   printf("[%08X]hhash_free_hdval_t\n", r);
 }
 

@@ -253,6 +253,9 @@ int hislist_foreach(hlist_t* l, hlist_foreach_t f) {
 
 
 // HASH
+#define STB_DS_IMPLEMENTATION
+#include "stb_ds.h"
+
 // 基于 stb_ds.h 字符串哈希表（sh_new_strdup 模式）的封装实现。
 // handle 类型为 hhash_entry_t*（与 stb_ds 的 struct{char*key; T value;}* 兼容）。
 
