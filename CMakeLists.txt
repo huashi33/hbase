@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(hbase C)
+project(hcore C)
 
 
 set(CMAKE_INSTALL_PREFIX "/home/huashi/code/")
@@ -7,25 +7,29 @@ set(CMAKE_BUILD_TYPE Debug)
 
 
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/src
+)
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
-file(GLOB HBASE_SRCS "src/*.c")
-add_library(hbase SHARED ${HBASE_SRCS})
-target_link_libraries(hbase zlog iniparser)
+file(GLOB HC_SRCS "src/*.c")
+add_library(hcore SHARED ${HC_SRCS} )
+set(HC_3RD libzlog.a libiniparser.a)
+target_link_libraries(hcore ${HC_3RD})
 
 # install
-# file(GLOB HBASE_INCS "*.h")
+# file(GLOB HC_INCS "*.h")
 install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}/include
-    DESTINATION .
+    DIRECTORY ${CMAKE_SOURCE_DIR}/include/
+    DESTINATION include/hcore
 )
-install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}/lib
-    DESTINATION .
-)
+# install(
+#     DIRECTORY ${CMAKE_SOURCE_DIR}/lib
+#     DESTINATION .
+# )
 install(TARGETS
-    hbase
+    hcore
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib

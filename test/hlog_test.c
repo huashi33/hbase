@@ -7,7 +7,7 @@ int main(int argc,char *argv[]){
 
   int r = 0;
   r = hlog_init(appname,cfgname);
-  HBASE_RET_WHEN(r, r);
+  HC_RET_WHEN(r, r);
 
   HLOG_DEBUG("log from d");
   HLOG_INFO("log from i");
@@ -15,6 +15,6 @@ int main(int argc,char *argv[]){
   HLOG_ERROR("log from e");
 
   r = hlog_deinit(appname);
-  HBASE_RET_WHEN(r, r);
+  HC_RET_WHEN(r, r);
   return 0;
 }

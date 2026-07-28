@@ -3,7 +3,7 @@
 #include "hdef.h"
 
 // BUF
-#define HBASE_RET_BUF_BASE HBASE_RET_BASE_DS
+#define HC_RET_BUF_BASE HC_RET_BASE_DS
 typedef struct hbuf_ {
   size_t len;
   size_t size;
@@ -17,7 +17,7 @@ HFC_EXPORT int hbuf_print(hbuf_t* b, size_t ofs, size_t size);
 
 // RQ
 // TODO cache alive!!
-#define HBASE_RET_BASE_RQ HBASE_RET_BASE_DS
+#define HC_RET_BASE_RQ HC_RET_BASE_DS
 typedef struct hrq_ {
   size_t size;  // 2^n
   size_t in;
@@ -30,7 +30,7 @@ HFC_EXPORT int hrp_push(hrq_t* rq, void* data, uint32_t size);
 HFC_EXPORT int hrp_pop(hrq_t* rq, void* data, uint32_t size);
 
 // LIST
-#define HBASE_RET_BASE_LIST HBASE_RET_BASE_DS
+#define HC_RET_BASE_LIST HC_RET_BASE_DS
 typedef struct hlistitem_ {
   struct hlistitem_* next;
 } hlistitem_t;
@@ -56,7 +56,7 @@ HFC_EXPORT hlistitem_t* hlist_find_first(hlist_t* l, hlistitem_t* tar,
 HFC_EXPORT int hislist_foreach(hlist_t* l, hlist_foreach_t f);
 
 // HASH
-#define HBASE_RET_BASE_HASH HBASE_RET_BASE_DS
+#define HC_RET_BASE_HASH HC_RET_BASE_DS
 
 #include "stb_ds.h"
 
@@ -77,14 +77,14 @@ HFC_EXPORT int hislist_foreach(hlist_t* l, hlist_foreach_t f);
 
 #define HHASH_DEFINE_DEINIT(TK, TV)                                         \
   static inline int hhash_deinit_##TV(HHASH_TYPEDEF(TK, TV) * h) {          \
-    HBASE_RET_WHEN(!h, HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_PARAM(0))); \
+    HC_RET_WHEN(!h, HC_RET(HC_RET_BASE_HASH, HC_RET_PARAM(0))); \
     shfree(h);                                                              \
-    return HBASE_RET_OK;                                                    \
+    return HC_RET_OK;                                                    \
   }
 
 #define HHASH_DEFINE_GET(TK, TV)                                      \
   static inline TV* hhash_get_##TV(HHASH_TYPEDEF(TK, TV) * h, TK k) { \
-    HBASE_RET_WHEN(!h, NULL);                                         \
+    HC_RET_WHEN(!h, NULL);                                         \
     ptrdiff_t idx = shgeti(h, k);                                     \
     if (idx < 0) return NULL;                                         \
     return &h[idx].value;                                             \
@@ -92,17 +92,17 @@ HFC_EXPORT int hislist_foreach(hlist_t* l, hlist_foreach_t f);
 
 #define HHASH_DEFINE_SET(TK, TV)                                            \
   static inline int hhash_set_##TV(HHASH_TYPEDEF(TK, TV) * h, TK k, TV v) { \
-    HBASE_RET_WHEN(!h, HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_PARAM(0))); \
+    HC_RET_WHEN(!h, HC_RET(HC_RET_BASE_HASH, HC_RET_PARAM(0))); \
     shput(h, k, v);                                                         \
-    return HBASE_RET_OK;                                                    \
+    return HC_RET_OK;                                                    \
   }
 
 #define HHASH_DEFINE_DEL(TK, TV)                                            \
   static inline int hhash_del_##TV(HHASH_TYPEDEF(TK, TV) * h, TK k) {       \
-    HBASE_RET_WHEN(!h, HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_PARAM(0))); \
+    HC_RET_WHEN(!h, HC_RET(HC_RET_BASE_HASH, HC_RET_PARAM(0))); \
     int found = shdel(h, k);                                                \
-    return found ? HBASE_RET_OK                                             \
-                 : HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_NOTFOUND);      \
+    return found ? HC_RET_OK                                             \
+                 : HC_RET(HC_RET_BASE_HASH, HC_RET_NOTFOUND);      \
   }
 
 #define HHASH_DEFINE_SIZE(TK, TV)                                   \
@@ -112,10 +112,10 @@ HFC_EXPORT int hislist_foreach(hlist_t* l, hlist_foreach_t f);
 
 #define HHASH_DEFINE_EXIST(TK, TV)                                        \
   static inline int hhash_exist_##TV(HHASH_TYPEDEF(TK, TV) * h, TK k) {   \
-    HBASE_RET_WHEN(!h, HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_PARAM(0))); \
+    HC_RET_WHEN(!h, HC_RET(HC_RET_BASE_HASH, HC_RET_PARAM(0))); \
     ptrdiff_t idx = shgeti(h, k);                                         \
-    return idx >= 0 ? HBASE_RET_OK                                        \
-                    : HBASE_RET(HBASE_RET_BASE_HASH, HBASE_RET_NOTFOUND); \
+    return idx >= 0 ? HC_RET_OK                                        \
+                    : HC_RET(HC_RET_BASE_HASH, HC_RET_NOTFOUND); \
   }
 
 #define HHASH_DEFINE(TK, TV)  \

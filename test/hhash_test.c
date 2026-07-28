@@ -10,9 +10,9 @@
 
 // static void test_init_deinit(void) {
 //   hhash_t h;
-//   assert(hhash_init(&h) == HBASE_RET_OK);
+//   assert(hhash_init(&h) == HC_RET_OK);
 //   assert(hhash_len(&h) == 0);
-//   assert(hhash_deinit(&h) == HBASE_RET_OK);
+//   assert(hhash_deinit(&h) == HC_RET_OK);
 //   printf("[PASS] test_init_deinit\n");
 // }
 
@@ -24,8 +24,8 @@
 //   hhash_init(&h);
 
 //   //  set + get
-//   assert(hhash_set(&h, "alpha", &a) == HBASE_RET_OK);
-//   assert(hhash_set(&h, "beta", &b) == HBASE_RET_OK);
+//   assert(hhash_set(&h, "alpha", &a) == HC_RET_OK);
+//   assert(hhash_set(&h, "beta", &b) == HC_RET_OK);
 //   assert(hhash_len(&h) == 2);
 
 //   myitem_t* p = (myitem_t*)hhash_get(&h, "alpha");
@@ -68,13 +68,13 @@
 //   hhash_set(&h, "x", &a);
 //   assert(hhash_len(&h) == 1);
 
-//   assert(hhash_del(&h, "x") == HBASE_RET_OK);
+//   assert(hhash_del(&h, "x") == HC_RET_OK);
 //   assert(hhash_len(&h) == 0);
 //   assert(hhash_get(&h, "x") == NULL);
 
 //   /* 删除不存在的 key 应返回非 OK 错误码 */
 //   int r = hhash_del(&h, "x");
-//   assert(r != HBASE_RET_OK);
+//   assert(r != HC_RET_OK);
 
 //   hhash_deinit(&h);
 //   printf("[PASS] test_del\n");
@@ -112,9 +112,9 @@
 //   hhash_init(&h);
 
 //   /* NULL 参数不应崩溃 */
-//   assert(hhash_set(&h, NULL, NULL) != HBASE_RET_OK);
+//   assert(hhash_set(&h, NULL, NULL) != HC_RET_OK);
 //   assert(hhash_get(&h, NULL) == NULL);
-//   assert(hhash_del(&h, NULL) != HBASE_RET_OK);
+//   assert(hhash_del(&h, NULL) != HC_RET_OK);
 //   assert(hhash_len(NULL) == 0);
 //   assert(hhash_geti(NULL, 0) == NULL);
 //   assert(hhash_geti_key(NULL, 0) == NULL);

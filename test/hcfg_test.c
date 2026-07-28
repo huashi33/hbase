@@ -10,10 +10,10 @@ static int dic_test(){
   char vv[256] = "";
 
   r = dictionary_set(dic,k,"zhangsan");
-  HBASE_RET_WHEN(r,r);
+  HC_RET_WHEN(r,r);
 
   const char *vget = dictionary_get(dic,k,NULL);
-  HBASE_RET_WHEN(!vget,1);
+  HC_RET_WHEN(!vget,1);
   printf("%s:%s\n",k,vget);
 
 
@@ -23,14 +23,14 @@ static int cfg_test(const char* cfgname,const char* key ){
   hcfg_t c;
   int r = 0;
   r = hcfg_init(&c,cfgname,HCFG_TYPE_INI);
-  HBASE_RET_WHEN(r, r);
+  HC_RET_WHEN(r, r);
 
   char vv[256] = {0};
   r = hcfg_str(&c,key,vv,sizeof(vv));
   printf("%s,%s -> %s\n",cfgname,key,vv);
 
   r = hcfg_deinit(&c);
-  HBASE_RET_WHEN(r, r);
+  HC_RET_WHEN(r, r);
   return 0;
 
 }
