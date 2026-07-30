@@ -136,18 +136,22 @@ HHASH_DEFINE(char*, hdval_t)
 // #define STB_DS_IMPLEMENTATION
 static void hhash_test() {
   int r = 0;
-  hhash_hdval_t* hash_hdval = hhash_init_hdval_t();
+  hhash_hdval_t* hash_hdval = NULL;
+  HHASH_INIT(hash_hdval);
   printf("[%08X]hhash_init_hdval_t:%p\n", r, hash_hdval);
 
+  int a = 0;
   hdval_t v;
   v.type = 21;
-  r = hhash_set_hdval_t(hash_hdval, "name", v);
+  // r = hhash_set_hdval_t(hash_hdval, "name", v);
+  HHASH_SET(hash_hdval, "name", v);
   printf("[%08X]hhash_set_hdval_t\n", r);
 
   clock_t start = clock();
   hdval_t* pv = NULL;
   for (int i = 0; i < 1000000; ++i) {
-    pv = hhash_get_hdval_t(hash_hdval, "name");
+    // pv = hhash_get_hdval_t(hash_hdval, "name");
+    pv = HHASH_GET(hash_hdval, "name");
   }
 
   clock_t end = clock();
@@ -158,7 +162,8 @@ static void hhash_test() {
     printf("[%08X]hhash_get_hdval_t,type:%d\n", r, pv->type);
   }
 
-  r = hhash_deinit_hdval_t(hash_hdval);
+  // r = hhash_deinit_hdval_t(hash_hdval);
+  HHASH_DEINIT(hash_hdval);
   printf("[%08X]hhash_free_hdval_t\n", r);
 }
 

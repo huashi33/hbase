@@ -62,70 +62,86 @@ HFC_EXPORT int hislist_foreach(hlist_t* l, hlist_foreach_t f);
 
 #define HHASH_TYPEDEF(TK, TV) hhash_##TV
 
-#define HHASH_DEFINE_ENTRY(TK, TV) \
+// #define HHASH_DEFINE_ENTRY(TK, TV) \
+//   typedef struct hhash_##TV##_ {   \
+//     TK key;                        \
+//     TV value;                      \
+//   } HHASH_TYPEDEF(TK, TV);
+
+// #define HHASH_DEFINE_INIT(TK, TV)                           \
+//   static inline HHASH_TYPEDEF(TK, TV) * hhash_init_##TV() { \
+//     HHASH_TYPEDEF(TK, TV)* h = NULL;                        \
+//     sh_new_strdup(h);                                       \
+//     return h;                                               \
+//   }
+
+// #define HHASH_DEFINE_DEINIT(TK, TV)                                         \
+//   static inline int hhash_deinit_##TV(HHASH_TYPEDEF(TK, TV) * h) {          \
+//     HC_RET_WHEN(!h, HC_RET(HC_RET_BASE_HASH, HC_RET_PARAM(0))); \
+//     shfree(h);                                                              \
+//     return HC_RET_OK;                                                    \
+//   }
+
+// #define HHASH_DEFINE_GET(TK, TV)                                      \
+//   static inline TV* hhash_get_##TV(HHASH_TYPEDEF(TK, TV) * h, TK k) { \
+//     HC_RET_WHEN(!h, NULL);                                         \
+//     ptrdiff_t idx = shgeti(h, k);                                     \
+//     if (idx < 0) return NULL;                                         \
+//     return &h[idx].value;                                             \
+//   }
+
+// #define HHASH_DEFINE_SET(TK, TV)                                            \
+//   static inline int hhash_set_##TV(HHASH_TYPEDEF(TK, TV) * h, TK k, TV v) { \
+//     HC_RET_WHEN(!h, HC_RET(HC_RET_BASE_HASH, HC_RET_PARAM(0))); \
+//     shput(h, k, v);                                                         \
+//     return HC_RET_OK;                                                    \
+//   }
+
+// #define HHASH_DEFINE_DEL(TK, TV)                                            \
+//   static inline int hhash_del_##TV(HHASH_TYPEDEF(TK, TV) * h, TK k) {       \
+//     HC_RET_WHEN(!h, HC_RET(HC_RET_BASE_HASH, HC_RET_PARAM(0))); \
+//     int found = shdel(h, k);                                                \
+//     return found ? HC_RET_OK                                             \
+//                  : HC_RET(HC_RET_BASE_HASH, HC_RET_NOTFOUND);      \
+//   }
+
+// #define HHASH_DEFINE_SIZE(TK, TV)                                   \
+//   static inline size_t hhash_size_##TV(HHASH_TYPEDEF(TK, TV) * h) { \
+//     return h ? (size_t)shlen(h) : 0;                                \
+//   }
+
+// #define HHASH_DEFINE_EXIST(TK, TV)                                        \
+//   static inline int hhash_exist_##TV(HHASH_TYPEDEF(TK, TV) * h, TK k) {   \
+//     HC_RET_WHEN(!h, HC_RET(HC_RET_BASE_HASH, HC_RET_PARAM(0))); \
+//     ptrdiff_t idx = shgeti(h, k);                                         \
+//     return idx >= 0 ? HC_RET_OK                                        \
+//                     : HC_RET(HC_RET_BASE_HASH, HC_RET_NOTFOUND); \
+//   }
+// #define HHASH_DEFINE(TK, TV)  \
+//   HHASH_DEFINE_ENTRY(TK, TV)  \
+//   HHASH_DEFINE_INIT(TK, TV)   \
+//   HHASH_DEFINE_DEINIT(TK, TV) \
+//   HHASH_DEFINE_GET(TK, TV)    \
+//   HHASH_DEFINE_SET(TK, TV)    \
+//   HHASH_DEFINE_DEL(TK, TV)    \
+//   HHASH_DEFINE_SIZE(TK, TV)   \
+//   HHASH_DEFINE_EXIST(TK, TV)
+
+#define HHASH_ENTRY(TK, TV) \
   typedef struct hhash_##TV##_ {   \
     TK key;                        \
     TV value;                      \
   } HHASH_TYPEDEF(TK, TV);
+#define HHASH_DEFINE(TK, TV)  HHASH_ENTRY(TK, TV)  
 
-#define HHASH_DEFINE_INIT(TK, TV)                           \
-  static inline HHASH_TYPEDEF(TK, TV) * hhash_init_##TV() { \
-    HHASH_TYPEDEF(TK, TV)* h = NULL;                        \
-    sh_new_strdup(h);                                       \
-    return h;                                               \
-  }
+#define HHASH_INIT(h)        sh_new_strdup(h)                      
+#define HHASH_DEINIT(h)      shfree(h)                             
+#define HHASH_GET(h,k)     &(shget(h, k))
+#define HHASH_SET(h, k, v)  shput(h, k, v)
+#define HHASH_DEL(h, k) shdel(h, k)
+#define HHASH_SIZE(h) (size_t)shlen(h)
+#define HHASH_EXIST(h,k)  (shgeti(h, k))>=0?HC_RET_OK:HC_RET_NOTFOUND
 
-#define HHASH_DEFINE_DEINIT(TK, TV)                                         \
-  static inline int hhash_deinit_##TV(HHASH_TYPEDEF(TK, TV) * h) {          \
-    HC_RET_WHEN(!h, HC_RET(HC_RET_BASE_HASH, HC_RET_PARAM(0))); \
-    shfree(h);                                                              \
-    return HC_RET_OK;                                                    \
-  }
 
-#define HHASH_DEFINE_GET(TK, TV)                                      \
-  static inline TV* hhash_get_##TV(HHASH_TYPEDEF(TK, TV) * h, TK k) { \
-    HC_RET_WHEN(!h, NULL);                                         \
-    ptrdiff_t idx = shgeti(h, k);                                     \
-    if (idx < 0) return NULL;                                         \
-    return &h[idx].value;                                             \
-  }
-
-#define HHASH_DEFINE_SET(TK, TV)                                            \
-  static inline int hhash_set_##TV(HHASH_TYPEDEF(TK, TV) * h, TK k, TV v) { \
-    HC_RET_WHEN(!h, HC_RET(HC_RET_BASE_HASH, HC_RET_PARAM(0))); \
-    shput(h, k, v);                                                         \
-    return HC_RET_OK;                                                    \
-  }
-
-#define HHASH_DEFINE_DEL(TK, TV)                                            \
-  static inline int hhash_del_##TV(HHASH_TYPEDEF(TK, TV) * h, TK k) {       \
-    HC_RET_WHEN(!h, HC_RET(HC_RET_BASE_HASH, HC_RET_PARAM(0))); \
-    int found = shdel(h, k);                                                \
-    return found ? HC_RET_OK                                             \
-                 : HC_RET(HC_RET_BASE_HASH, HC_RET_NOTFOUND);      \
-  }
-
-#define HHASH_DEFINE_SIZE(TK, TV)                                   \
-  static inline size_t hhash_size_##TV(HHASH_TYPEDEF(TK, TV) * h) { \
-    return h ? (size_t)shlen(h) : 0;                                \
-  }
-
-#define HHASH_DEFINE_EXIST(TK, TV)                                        \
-  static inline int hhash_exist_##TV(HHASH_TYPEDEF(TK, TV) * h, TK k) {   \
-    HC_RET_WHEN(!h, HC_RET(HC_RET_BASE_HASH, HC_RET_PARAM(0))); \
-    ptrdiff_t idx = shgeti(h, k);                                         \
-    return idx >= 0 ? HC_RET_OK                                        \
-                    : HC_RET(HC_RET_BASE_HASH, HC_RET_NOTFOUND); \
-  }
-
-#define HHASH_DEFINE(TK, TV)  \
-  HHASH_DEFINE_ENTRY(TK, TV)  \
-  HHASH_DEFINE_INIT(TK, TV)   \
-  HHASH_DEFINE_DEINIT(TK, TV) \
-  HHASH_DEFINE_GET(TK, TV)    \
-  HHASH_DEFINE_SET(TK, TV)    \
-  HHASH_DEFINE_DEL(TK, TV)    \
-  HHASH_DEFINE_SIZE(TK, TV)   \
-  HHASH_DEFINE_EXIST(TK, TV)
 
 #endif
